@@ -7,17 +7,17 @@
 :root {
   --font-sans: "Inter", "Segoe UI", system-ui, -apple-system, sans-serif;
 
-  --bg-1: #12101f;
-  --bg-2: #1b1730;
+  --bg-1: #0A0A0C;
+  --bg-2: #16161B;
   --surface: rgb(255 255 255 / 0.06);
   --surface-border: rgb(255 255 255 / 0.10);
   --text-1: #f4f4f8;
   --text-2: #9a9ab8;
   --btn-ghost-bg: rgb(255 255 255 / 0.08);
 
-  --accent: #8b5cf6;
-  --accent-soft: rgb(139 92 246 / 0.18);
-  --glow: rgb(139 92 246 / 0.4);
+  --accent: #E50914;
+  --accent-soft: rgb(229 9 20 / 0.15);
+  --glow: rgb(229 9 20 / 0.35);
 
   --radius-lg: 20px;
   --radius-md: 14px;

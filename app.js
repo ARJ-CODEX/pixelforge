@@ -386,6 +386,78 @@ function clearCanvas() {
   save();
 }
 
+/* ---------- Share card (branded, viral loop) ---------- */
+function shareArtwork() {
+  const w = 900;
+  const h = 520;
+  const c = document.createElement("canvas");
+  c.width = w;
+  c.height = h;
+  const x = c.getContext("2d");
+  x.imageSmoothingEnabled = false;
+
+  // Abyss background + red vignette
+  x.fillStyle = "#0A0A0C";
+  x.fillRect(0, 0, w, h);
+  const vignette = x.createRadialGradient(w / 2, h / 2, 60, w / 2, h / 2, 520);
+  vignette.addColorStop(0, "rgba(229, 9, 20, 0.10)");
+  vignette.addColorStop(1, "rgba(0, 0, 0, 0)");
+  x.fillStyle = vignette;
+  x.fillRect(0, 0, w, h);
+
+  // Metallic gold frame
+  const frame = x.createLinearGradient(0, 0, w, h);
+  frame.addColorStop(0, "#FFD75E");
+  frame.addColorStop(1, "#C9962C");
+  x.strokeStyle = frame;
+  x.lineWidth = 4;
+  x.strokeRect(24, 24, w - 48, h - 48);
+
+  // Brand header
+  x.textAlign = "left";
+  x.font = "700 40px 'Segoe UI', system-ui, sans-serif";
+  x.fillStyle = "#F5F5F7";
+  x.fillText("Pixel", 56, 96);
+  x.fillStyle = "#E50914";
+  x.fillText("Forge", 56 + x.measureText("Pixel").width, 96);
+
+  // Artwork centered with a gold hairline frame
+  const scale = Math.max(2, Math.floor(320 / state.size));
+  const px = state.size * scale;
+  const ox = (w - px) / 2;
+  const oy = 140 + (330 - px) / 2;
+  x.fillStyle = "#141418";
+  x.fillRect(ox - 12, oy - 12, px + 24, px + 24);
+  for (let yy = 0; yy < state.size; yy++) {
+    for (let xx = 0; xx < state.size; xx++) {
+      if ((xx + yy) % 2 === 0) {
+        x.fillStyle = "rgba(255, 255, 255, 0.05)";
+        x.fillRect(ox + xx * scale, oy + yy * scale, scale, scale);
+      }
+    }
+  }
+  x.drawImage(canvas, ox, oy, px, px);
+  x.strokeStyle = "rgba(201, 150, 44, 0.5)";
+  x.lineWidth = 2;
+  x.strokeRect(ox - 6, oy - 6, px + 12, px + 12);
+
+  // Footer
+  x.fillStyle = "#9A9AA8";
+  x.font = "600 16px 'Segoe UI', system-ui, sans-serif";
+  x.fillText("arj-codex.github.io/pixelforge", 56, h - 56);
+  const ember = x.createLinearGradient(0, h - 46, 360, h - 46);
+  ember.addColorStop(0, "#FF1E3C");
+  ember.addColorStop(1, "#FFC93C");
+  x.fillStyle = ember;
+  x.font = "700 16px 'Segoe UI', system-ui, sans-serif";
+  x.fillText("Forged with 🎨 by ARJ-CODEX ⚡", 56, h - 28);
+
+  const a = document.createElement("a");
+  a.download = "pixelforge-artwork.png";
+  a.href = c.toDataURL("image/png");
+  a.click();
+}
+
 /* ---------- Events ---------- */
 document.querySelectorAll(".tool-btn[data-tool]").forEach((btn) => {
   btn.addEventListener("click", () => setTool(btn.dataset.tool));
@@ -407,6 +479,7 @@ $("grid-btn").addEventListener("click", () => {
 $("clear-btn").addEventListener("click", clearCanvas);
 undoBtn.addEventListener("click", undo);
 redoBtn.addEventListener("click", redo);
+$("share-btn").addEventListener("click", shareArtwork);
 
 document.querySelectorAll(".size-btn").forEach((btn) => {
   btn.addEventListener("click", () => changeSize(Number(btn.dataset.size)));
