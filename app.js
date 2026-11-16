@@ -30,6 +30,7 @@ let redoStack = [];
 let recents = [];
 let drawing = false;
 let lastCell = null;
+let preStroke = null; // snapshot before a stroke, to drop no-op undo entries
 
 /* ---------- DOM handles ---------- */
 const $ = (id) => document.getElementById(id);
@@ -227,6 +228,7 @@ canvas.addEventListener("pointerdown", (e) => {
   const cell = cellFromEvent(e);
   if (!cell) return;
 
+  preStroke = snapshot();
   pushUndo();
   drawing = true;
   canvas.setPointerCapture(e.pointerId);
@@ -238,6 +240,7 @@ canvas.addEventListener("pointermove", (e) => {
   const cell = cellFromEvent(e);
   posLabel.textContent = cell ? `x: ${cell.x} · y: ${cell.y}` : "—";
   if (!drawing || !cell) return;
+  if (state.tool === "fill" || state.tool === "picker") return; // one-shot tools: click only
   strokeTo(cell);
   lastCell = cell;
 });
@@ -246,12 +249,19 @@ canvas.addEventListener("pointerup", () => {
   if (!drawing) return;
   drawing = false;
   lastCell = null;
+  if (preStroke !== null && snapshot() === preStroke) {
+    undoStack.pop(); // stroke changed nothing — keep history clean
+    updateHistoryButtons();
+  }
+  preStroke = null;
   save();
 });
 
 canvas.addEventListener("pointerleave", () => {
   posLabel.textContent = "—";
 });
+
+canvas.addEventListener("contextmenu", (e) => e.preventDefault());
 
 /* ---------- Colors & palette ---------- */
 function setColor(color, { remember = true } = {}) {
@@ -406,19 +416,27 @@ document.querySelectorAll("[data-scale]").forEach((btn) => {
   btn.addEventListener("click", () => exportPNG(Number(btn.dataset.scale)));
 });
 
-customColor.addEventListener("input", (e) => setColor(e.target.value));
+customColor.addEventListener("input", (e) =>
+  setColor(e.target.value, { remember: false }) // live preview without polluting recents
+);
+customColor.addEventListener("change", (e) => setColor(e.target.value));
 
 document.addEventListener("keydown", (e) => {
   if (e.target.tagName === "INPUT") return;
-
   const k = e.key.toLowerCase();
-  if ((e.ctrlKey || e.metaKey) && k === "z") {
-    e.preventDefault();
-    e.shiftKey ? redo() : undo();
-  } else if ((e.ctrlKey || e.metaKey) && k === "y") {
-    e.preventDefault();
-    redo();
-  } else if (k === "b") setTool("pencil");
+
+  if (e.ctrlKey || e.metaKey) {
+    if (k === "z") {
+      e.preventDefault();
+      e.shiftKey ? redo() : undo();
+    } else if (k === "y") {
+      e.preventDefault();
+      redo();
+    }
+    return; // leave every other browser shortcut (Ctrl+F, Ctrl+S…) untouched
+  }
+
+  if (k === "b") setTool("pencil");
   else if (k === "e") setTool("eraser");
   else if (k === "f") setTool("fill");
   else if (k === "i") setTool("picker");
