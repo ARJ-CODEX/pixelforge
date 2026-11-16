@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="PixelForge — a fast, minimalist pixel-art editor in your browser. Draw sprites, export PNGs, no account needed. Free and source-available." />
+  <title>PixelForge — Pixel Art Editor</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='0.9em' font-size='90'>🎨</text></svg>" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <main class="app">
+
+    <!-- ======= Header ======= -->
+    <header class="header">
+      <a class="brand" href="./" aria-label="PixelForge home">
+        <span class="brand-icon">🎨</span>
+        <span class="brand-name">Pixel<span class="brand-accent">Forge</span></span>
+      </a>
+      <div class="header-actions">
+        <button class="icon-btn" id="undo-btn" title="Undo (Ctrl+Z)" aria-label="Undo">↩️</button>
+        <button class="icon-btn" id="redo-btn" title="Redo (Ctrl+Y)" aria-label="Redo">↪️</button>
+        <a class="icon-btn" href="https://github.com/ARJ-CODEX/pixelforge" target="_blank" rel="noopener" title="View on GitHub" aria-label="View source code on GitHub">
+          <svg width="20" height="20" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
+            <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27s1.36.09 2 .27c1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8z"/>
+          </svg>
+        </a>
+      </div>
+    </header>
+
+    <!-- ======= Workspace ======= -->
+    <div class="workspace">
+
+      <!-- Tools -->
+      <aside class="toolbar" aria-label="Drawing tools">
+        <button class="tool-btn active" data-tool="pencil" title="Pencil (B)" aria-label="Pencil">✏️</button>
+        <button class="tool-btn" data-tool="eraser" title="Eraser (E)" aria-label="Eraser">🧽</button>
+        <button class="tool-btn" data-tool="fill" title="Fill (F)" aria-label="Flood fill">🪣</button>
+        <button class="tool-btn" data-tool="picker" title="Color picker (I)" aria-label="Color picker">💧</button>
+        <div class="tool-divider"></div>
+        <button class="tool-btn" id="grid-btn" title="Toggle grid (G)" aria-label="Toggle grid">▦</button>
+        <button class="tool-btn" id="clear-btn" title="Clear canvas" aria-label="Clear canvas">🗑️</button>
+      </aside>
+
+      <!-- Canvas -->
+      <section class="canvas-area" aria-label="Pixel canvas">
+        <div class="canvas-frame" id="canvas-frame">
+          <canvas id="pixel-canvas" class="pixel-canvas"></canvas>
+          <canvas id="grid-canvas" class="grid-canvas"></canvas>
+        </div>
+        <div class="canvas-meta">
+          <span class="pos-label" id="pos-label">—</span>
+          <div class="size-picker" role="group" aria-label="Canvas size">
+            <button class="size-btn active" data-size="16">16</button>
+            <button class="size-btn" data-size="32">32</button>
+            <button class="size-btn" data-size="64">64</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- Side panel -->
+      <aside class="side-panel" aria-label="Colors and export">
+        <div class="current-color">
+          <span class="color-swatch" id="current-swatch"></span>
+          <span class="color-hex" id="current-hex">#FF004D</span>
+          <input type="color" id="custom-color" value="#FF004D" title="Custom color" aria-label="Custom color" />
+        </div>
+
+        <h3 class="panel-title">Palette</h3>
+        <div class="palette" id="palette"></div>
+
+        <h3 class="panel-title">Recent</h3>
+        <div class="palette recent" id="recents"></div>
+
+        <h3 class="panel-title">Export PNG</h3>
+        <div class="export-row">
+          <button class="btn btn-ghost btn-tiny" data-scale="8">×8</button>
+          <button class="btn btn-ghost btn-tiny" data-scale="16">×16</button>
+          <button class="btn btn-ghost btn-tiny" data-scale="32">×32</button>
+        </div>
+      </aside>
+
+    </div>
+
+    <footer class="footer">
+      <p>
+        Built with 🎨 by
+        <a href="https://github.com/ARJ-CODEX" target="_blank" rel="noopener">ARJ-CODEX</a>
+        · Everything stays in your browser ·
+        <a href="https://github.com/ARJ-CODEX/pixelforge" target="_blank" rel="noopener">Source code</a>
+      </p>
+    </footer>
+
+  </main>
+
+  <script src="app.js"></script>
+</body>
+</html>
